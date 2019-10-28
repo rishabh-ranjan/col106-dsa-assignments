@@ -1,3 +1,4 @@
+package Util;
 public class UnorderedTriple<T extends Comparable<T>>
 		implements Comparable<UnorderedTriple<T>> {
 	public T first;

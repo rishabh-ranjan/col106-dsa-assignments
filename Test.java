@@ -1,4 +1,4 @@
-import Util.*;
+import Util.UnorderedTriple;
 public class Test {
 	private static void println(Object obj) {
 		System.out.println(obj);
