@@ -24,7 +24,7 @@ class SetNode<T> {
 	}
 }
 
-public class Set<T extends Comparable> {
+public class Set<T extends Comparable<T>> {
 	private SetNode<T> root;
 
 	private void rightRotate(SetNode<T> g) {

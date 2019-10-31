@@ -4,11 +4,19 @@ public class Test {
 		System.out.println(obj);
 	}
 	public static void main(String[] args) {
-		ArrayList<Integer> a = new ArrayList<Integer>();
-		for (int i = 0; i < 1000000; ++i) {
-			a.add(-i);
+		ArrayList<String> a = new ArrayList<String>();
+		a.add("apple");
+		a.add("zoo");
+		a.add("hello");
+		a.add("selfie");
+		a.add("sumblime");
+		a.add(" space ");
+		a.add("123");
+		a.add("WORLD");
+		a.add("HELLO");
+		Sort.sort(a);
+		for (int i = 0; i < a.size(); ++i) {
+			println(a.get(i));
 		}
-		a.sort();
-		println("done");
 	}
 }

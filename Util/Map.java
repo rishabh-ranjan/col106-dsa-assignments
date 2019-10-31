@@ -31,7 +31,7 @@ class MapNode<T, E> {
 	}
 }
 
-public class Map<T extends Comparable, E> {
+public class Map<T extends Comparable<T>, E> {
 	private MapNode<T, E> root;
 
 	private void rightRotate(MapNode<T, E> g) {

@@ -1,5 +1,14 @@
+import Util.ArrayList;
+
 class Point implements PointInterface, Comparable<Point> {
-	float x, y, z;
+	public float x, y, z;
+	public ArrayList
+
+	public Point(int x, int y, int z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
 
 	public float getX() {
 		return x;
