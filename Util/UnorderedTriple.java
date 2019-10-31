@@ -5,6 +5,13 @@ public class UnorderedTriple<T extends Comparable<T>>
 	public T second;
 	public T third;
 
+	public T get(int i) {
+		if (i == 0) return first;
+		if (i == 1) return second;
+		if (i == 2) return third;
+		return null;
+	}
+
 	public UnorderedTriple(T a, T b, T c) {
 		if (a.compareTo(b) < 0) {
 			if (b.compareTo(c) < 0) {
@@ -42,12 +49,12 @@ public class UnorderedTriple<T extends Comparable<T>>
 	}
 
 	public int compareTo(UnorderedTriple<T> t) {
-		if (first == t.first && second == t.second) {
-			return third.compareTo(t.third);
-		} else if (first == t.first) {
-			return second.compareTo(t.second);
-		} else {
-			return first.compareTo(t.first);
-		}
+		if (this == t) return 0;
+		int c1 = first.compareTo(t.first);
+		int c2 = second.compareTo(t.second);
+		int c3 = third.compareTo(t.third);
+		if (c1 == 0 && c2 == 0) return c3;
+		if (c1 == 0) return c2;
+		return c1;
 	}
 }

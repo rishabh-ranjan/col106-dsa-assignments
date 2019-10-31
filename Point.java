@@ -1,13 +1,23 @@
 import Util.ArrayList;
 
 class Point implements PointInterface, Comparable<Point> {
-	public float x, y, z;
-	public ArrayList
 
-	public Point(int x, int y, int z) {
+	public static double distance(Point a, Point b) {
+		return Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y) + (a.z-b.z)*(a.z-b.z));
+	}
+
+	public float x, y, z;
+	public ArrayList<Point> vertexNeighbors;
+	public ArrayList<Edge> edgeNeighbors;
+	public ArrayList<Triangle> faceNeighbors;
+
+	public Point(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		vertexNeighbors = new ArrayList<Point>();
+		edgeNeighbors = new ArrayList<Edge>();
+		faceNeighbors = new ArrayList<Triangle>();
 	}
 
 	public float getX() {
@@ -34,6 +44,7 @@ class Point implements PointInterface, Comparable<Point> {
 	}
 
 	public int compareTo(Point p) {
+		if (this == p) return 0;
 		if (x == p.x && y == p.y) {
 			return comp(z, p.z);
 		} else if (x == p.x) {

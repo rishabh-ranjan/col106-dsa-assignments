@@ -66,11 +66,14 @@ public class Map<T extends Comparable<T>, E> {
 		}
 	}
 
-    public void insert(T key, E value) {
+	// returns older value without overwriting if key already exists
+	// else returns 'value'
+	// true if new insertion, else false
+    public Pair<E, Boolean> insert(T key, E value) {
 		if (this.root == null) {
 			this.root = new MapNode<T, E>(key, value, null, false);
 			this.root.color = Color.BLACK;
-			return;
+			return new Pair<E, Boolean>(value, true);
 		}
 
 		MapNode<T, E> z = this.root;
@@ -79,7 +82,7 @@ public class Map<T extends Comparable<T>, E> {
 			if (comp > 0) z = z.left;
 			else if (comp < 0) z = z.right;
 			else {
-				return;
+				return new Pair<E, Boolean>(z.value, false);
 			}
 		}
 
@@ -93,7 +96,7 @@ public class Map<T extends Comparable<T>, E> {
 		while (z != this.root) {
 			p = z.parent;
 			g = z.parent;
-			if (p.color == Color.BLACK) return;
+			if (p.color == Color.BLACK) return new Pair<E, Boolean>(value, true);
 			if (p.isLeft) u = g.right;
 			else u = g.left;
 			if (u.color == Color.BLACK) break;
@@ -105,7 +108,7 @@ public class Map<T extends Comparable<T>, E> {
 
 		if (z == this.root) {
 			z.color = Color.BLACK;
-			return;
+			return new Pair<E, Boolean>(value, true);
 		}
 
 		if (z.isLeft && p.isLeft) {
@@ -127,6 +130,8 @@ public class Map<T extends Comparable<T>, E> {
 			z.color = Color.BLACK;
 			g.color = Color.RED;
 		}
+
+		return new Pair<E, Boolean>(value, true);
     }
 
     public E get(T key) {
