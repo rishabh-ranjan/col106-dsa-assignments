@@ -4,20 +4,24 @@ import Util.UnorderedTriple;
 import Util.Map;
 import Util.Pair;
 import Util.ArrayList;
+import Util.Sort;
 
 public class Shape implements ShapeInterface {
 	Map<OrderedTriple<Float>, Point> vertexMap;
 	Map<UnorderedPair<Point>, Edge> edgeMap;
 	Map<UnorderedTriple<Point>, Triangle> faceMap;
+	ArrayList<Edge> edgeList;
+	ArrayList<Component> componentList;
 
 	public Shape() {
 		vertexMap = new Map<OrderedTriple<Float>, Point>();
 		edgeMap = new Map<UnorderedPair<Point>, Edge>();
 		faceMap = new Map<UnorderedTriple<Point>, Triangle>();
+		edgeList = new ArrayList<Edge>();
+		componentList = new ArrayList<Component>();
 	}
 
-	public boolean ADD_TRIANGLE(float[] triangle_coord) {
-		float[] c = triangle_coord;
+	public boolean ADD_TRIANGLE(float[] c) {
 		Point p1 = new Point(c[0], c[1], c[2]);
 		Point p2 = new Point(c[3], c[4], c[5]);
 		Point p3 = new Point(c[6], c[7], c[8]);
@@ -40,43 +44,36 @@ public class Shape implements ShapeInterface {
 		Edge e1 = new Edge(p1, p2);
 		Edge e2 = new Edge(p2, p3);
 		Edge e3 = new Edge(p3, p1);
-		System.out.println("Trying to insert edges:");
-		System.out.println(e1);
-		System.out.println(e2);
-		System.out.println(e3);
-		
 		Pair<Edge, Boolean> pe1 = edgeMap.insert(e1.vertices, e1);
 		Pair<Edge, Boolean> pe2 = edgeMap.insert(e2.vertices, e2);
 		Pair<Edge, Boolean> pe3 = edgeMap.insert(e3.vertices, e3);
-		System.out.println("After inserting edges:");
-		ArrayList<Edge> edges = edgeMap.getValues();
-		for (int i = 0; i < edges.size(); ++i) {
-			System.out.println(edges.get(i));
-		}
 		e1 = pe1.first;
 		e2 = pe2.first;
 		e3 = pe3.first;
 		boolean ne1 = pe1.second;
 		boolean ne2 = pe2.second;
 		boolean ne3 = pe3.second;
-		System.out.println(p1 + " " + p2 + " " + p3);
-		System.out.println(ne1 + " " + ne2 + " " + ne3);
 
 		Triangle t = new Triangle(p1, p2, p3, e1, e2, e3);
 		Pair<Triangle, Boolean> pt = faceMap.insert(t.vertices, t);
 		t = pt.first;
 		boolean nt = pt.second;
 
-		System.err.println("nt = " + nt);
 		if (nt) {
 			for (int j = 0; j < e1.faceNeighbors.size(); ++j) {
-				t.faceNeighbors.add(e1.faceNeighbors.get(j));
+				Triangle f = e1.faceNeighbors.get(j);
+				t.faceNeighbors.add(f);
+				f.faceNeighbors.add(t);
 			}
 			for (int j = 0; j < e2.faceNeighbors.size(); ++j) {
-				t.faceNeighbors.add(e2.faceNeighbors.get(j));
+				Triangle f = e2.faceNeighbors.get(j);
+				t.faceNeighbors.add(f);
+				f.faceNeighbors.add(t);
 			}
 			for (int j = 0; j < e3.faceNeighbors.size(); ++j) {
-				t.faceNeighbors.add(e3.faceNeighbors.get(j));
+				Triangle f = e3.faceNeighbors.get(j);
+				t.faceNeighbors.add(f);
+				f.faceNeighbors.add(t);
 			}
 			p1.faceNeighbors.add(t);
 			p2.faceNeighbors.add(t);
@@ -87,6 +84,7 @@ public class Shape implements ShapeInterface {
 		}
 
 		if (ne1) {
+			edgeList.add(e1);
 			p1.vertexNeighbors.add(p2);
 			p2.vertexNeighbors.add(p1);
 			p1.edgeNeighbors.add(e1);
@@ -94,6 +92,7 @@ public class Shape implements ShapeInterface {
 		}
 
 		if (ne2) {
+			edgeList.add(e2);
 			p2.vertexNeighbors.add(p3);
 			p3.vertexNeighbors.add(p2);
 			p2.edgeNeighbors.add(e2);
@@ -101,12 +100,212 @@ public class Shape implements ShapeInterface {
 		}
 
 		if (ne3) {
+			edgeList.add(e3);
 			p1.vertexNeighbors.add(p3);
 			p3.vertexNeighbors.add(p1);
 			p1.edgeNeighbors.add(e3);
 			p3.edgeNeighbors.add(e3);
 		}
 
+		if (nt) {
+			if (ne1 && ne2 && ne3) {
+				t.component = new Component(componentList.size());
+				t.component.add(t);
+				componentList.add(t.component);
+			} else {
+				Component cmp = null;
+				if (!ne1) {
+					cmp = e1.faceNeighbors.get(0).component;
+				}
+				if (!ne2) {
+					Component alt = e2.faceNeighbors.get(0).component;
+					if (cmp == null) {
+						cmp = alt;
+					} else {
+						if (cmp != alt) {
+							if (alt.size() > cmp.size()) {
+								Component tmp = alt;
+								alt = cmp;
+								cmp = tmp;
+							}
+							for (int i = 0; i < alt.size(); ++i) {
+								Triangle at = alt.get(i);
+								at.component = cmp;
+								cmp.add(at);
+							}
+							componentList.delete(alt.index);
+						}
+					}
+				}
+				if (!ne3) {
+					Component alt = e3.faceNeighbors.get(0).component;
+					if (cmp == null) {
+						cmp = alt;
+					} else {
+						if (cmp != alt) {
+							if (alt.size() > cmp.size()) {
+								Component tmp = alt;
+								alt = cmp;
+								cmp = tmp;
+							}
+							for (int i = 0; i < alt.size(); ++i) {
+								Triangle at = alt.get(i);
+								at.component = cmp;
+								cmp.add(at);
+							}
+							componentList.delete(alt.index);
+						}
+					}
+				}
+				t.component = cmp;
+				cmp.add(t);
+			}
+		}
+
 		return true;
+	}
+
+	private Triangle findFace(float[] c) {
+		Point p1 = new Point(c[0], c[1], c[2]);
+		Point p2 = new Point(c[3], c[4], c[5]);
+		Point p3 = new Point(c[6], c[7], c[8]);
+		UnorderedTriple<Point> ut = new UnorderedTriple<Point>(p1, p2, p3);
+		return faceMap.get(ut);
+	}
+
+	public TriangleInterface[] NEIGHBORS_OF_TRIANGLE(float[] c) {
+		Triangle t = findFace(c);
+		if (t == null) return null;
+		Sort.sort(t.faceNeighbors);
+		TriangleInterface[] r = new TriangleInterface[t.faceNeighbors.size()];
+		for (int i = 0; i < r.length; ++i) {
+			r[i] = t.faceNeighbors.get(i);
+		}
+		return r;
+	}
+
+	public EdgeInterface[] EDGE_NEIGHBOR_TRIANGLE(float[] c) {
+		Triangle t = findFace(c);
+		if (t == null) return null;
+		EdgeInterface[] r = new EdgeInterface[3];
+		for (int i = 0; i < r.length; ++i) {
+			r[i] = t.edges.get(i);
+		}
+		return r;
+	}
+
+	public PointInterface[] VERTEX_NEIGHBOR_TRIANGLE(float[] c) {
+		Triangle t = findFace(c);
+		if (t == null) return null;
+		PointInterface[] r = new PointInterface[3];
+		for (int i = 0; i < r.length; ++i) {
+			r[i] = t.vertices.get(i);
+		}
+		return r;
+	}
+
+	public TriangleInterface[] EXTENDED_NEIGHBOR_TRIANGLE(float[] c) {
+		Triangle t = findFace(c);
+		if (t == null) return null;
+		// TODO: piazza answer?
+		return null;
+	}
+
+	private Point findVertex(float[] c) {
+		OrderedTriple<Float> ot = new OrderedTriple<Float>(c[0], c[1], c[2]);
+		return vertexMap.get(ot);
+	}
+
+	public TriangleInterface[] INCIDENT_TRIANGLES(float[] c) {
+		Point p = findVertex(c);
+		if (c == null) return null;
+		// Sort.sort(p.faceNeighbors);
+		TriangleInterface[] r = new TriangleInterface[p.faceNeighbors.size()];
+		for (int i = 0; i < r.length; ++i) {
+			r[i] = p.faceNeighbors.get(i);
+		}
+		return r;
+	}
+
+	public PointInterface[] NEIGHBORS_OF_POINT(float[] c) {
+		Point p = findVertex(c);
+		if (c == null) return null;
+		PointInterface[] r = new PointInterface[p.vertexNeighbors.size()];
+		for (int i = 0; i < r.length; ++i) {
+			r[i] = p.vertexNeighbors.get(i);
+		}
+		return r;
+	}
+
+	public EdgeInterface[] EDGE_NEIGHBORS_OF_POINT(float[] c) {
+		Point p = findVertex(c);
+		if (c == null) return null;
+		EdgeInterface[] r = new EdgeInterface[p.edgeNeighbors.size()];
+		for (int i = 0; i < r.length; ++i) {
+			r[i] = p.edgeNeighbors.get(i);
+		}
+		return r;
+	}
+
+	public TriangleInterface[] FACE_NEIGHBORS_OF_POINT(float[] c) {
+		Point p = findVertex(c);
+		if (c == null) return null;
+		// Sort.sort(p.faceNeighbors);
+		TriangleInterface[] r = new TriangleInterface[p.faceNeighbors.size()];
+		for (int i = 0; i < r.length; ++i) {
+			r[i] = p.faceNeighbors.get(i);
+		}
+		return r;
+	}
+
+	private Edge findEdge(float[] c) {
+		float[] c1 = new float[3];
+		float[] c2 = new float[3];
+		c1[0] = c[0];
+		c1[1] = c[1];
+		c1[2] = c[2];
+		c2[0] = c[3];
+		c2[1] = c[4];
+		c2[2] = c[5];
+		Point p1 = findVertex(c1);
+		if (p1 == null) return null;
+		Point p2 = findVertex(c2);
+		if (p2 == null) return null;
+		UnorderedPair<Point> up = new UnorderedPair<Point>(p1, p2);
+		return edgeMap.get(up);
+	}
+
+	public TriangleInterface[] TRIANGLE_NEIGHBOR_OF_EDGE(float[] c) {
+		Edge e = findEdge(c);
+		if (e == null) return null;
+		// Sort.sort(e.faceNeighbors);
+		TriangleInterface[] r = new TriangleInterface[e.faceNeighbors.size()];
+		for (int i = 0; i < r.length; ++i) {
+			r[i] = e.faceNeighbors.get(i);
+		}
+		return r;
+	}
+
+	public int TYPE_MESH() {
+		boolean semi = false;
+		for (int i = 0; i < edgeList.size(); ++i) {
+			int s = edgeList.get(i).faceNeighbors.size();
+			if (s > 2) return 3;
+			if (s == 1) semi = true;
+		}
+		if (semi) return 2;
+		return 1;	
+	}
+
+	public int COUNT_CONNECTED_COMPONENTS() {
+		return componentList.size();
+	}
+
+	public boolean IS_CONNECTED(float[] c1, float[] c2) {
+		Triangle t1 = findFace(c1);
+		if (t1 == null) return false;
+		Triangle t2 = findFace(c2);
+		if (t2 == null) return false;
+		return t1.component == t2.component;
 	}
 }

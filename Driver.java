@@ -14,7 +14,7 @@ class Driver {
             String st;
             while ((st = br.readLine()) != null) {
                 String[] cmd = st.split(" ");
-		//System.out.println("cmd is "+ Arrays.toString(cmd));	
+		System.out.println("cmd is "+ Arrays.toString(cmd));	
 
                 if (cmd.length == 0) {
                     System.err.println("Error parsing:1 ");
@@ -172,7 +172,8 @@ class Driver {
 	}
 	catch(Exception e)
 	{
-		System.err.println("Error parsing: 2	 " +e);
+		//System.err.println("Error parsing: 2	 " +e);
+		e.printStackTrace();
 	}
 	
 

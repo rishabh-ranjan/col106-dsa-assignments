@@ -137,6 +137,7 @@ public class Map<T extends Comparable<T>, E> {
 		return new Pair<E, Boolean>(value, true);
     }
 
+    // null if not found
     public E get(T key) {
     	if (this.root == null) return null;
     	MapNode<T, E> z = this.root;
