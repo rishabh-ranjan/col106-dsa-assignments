@@ -10,6 +10,10 @@ class Edge implements EdgeInterface, Comparable<Edge> {
 		faceNeighbors = new ArrayList<Triangle>();
 	}
 
+	public String toString() {
+		return "Edge{ " + vertices.first.toString() + ", " + vertices.second.toString() + " }";
+	}
+
 	public PointInterface[] edgeEndPoints() {
 		PointInterface[] r = new PointInterface[2];
 		for (int i = 0; i < 2; ++i) r[i] = vertices.get(i);

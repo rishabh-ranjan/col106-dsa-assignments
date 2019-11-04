@@ -6,21 +6,23 @@ class SetNode<T> {
 	SetNode<T> right;
 	SetNode<T> parent;
 	Color color;
-	boolean isLeft;
 
-	public SetNode(T key, SetNode<T> parent, boolean isLeft) {
+	boolean isLeft() {
+		return this.parent == null || this.parent.left == this;
+	}
+
+	public SetNode(T key, SetNode<T> parent) {
 		this.key = key;
 		if (key == null) {
 			this.left = null;
 			this.right = null;
 		} else {
-			this.left = new SetNode<T>(null, this, true);
+			this.left = new SetNode<T>(null, this);
 			this.left.color = Color.BLACK;
-			this.right = new SetNode<T>(null, this, false);
+			this.right = new SetNode<T>(null, this);
 			this.right.color = Color.BLACK;
 		}
 		this.parent = parent;
-		this.isLeft = isLeft;
 	}
 }
 
@@ -29,7 +31,7 @@ public class Set<T extends Comparable<T>> {
 
 	private void rightRotate(SetNode<T> g) {
 		SetNode<T> p = g.left, z = p.left;
-		boolean l = g.isLeft;
+		boolean l = g.isLeft();
 		SetNode<T> t = p.right, y = g.parent;
 		p.right = g; g.parent = p;
 		g.left = t; t.parent = g;
@@ -45,7 +47,7 @@ public class Set<T extends Comparable<T>> {
 
 	private void leftRotate(SetNode<T> g) {
 		SetNode<T> p = g.right, z = p.right;
-		boolean l = g.isLeft;
+		boolean l = g.isLeft();
 		SetNode<T> t = p.left, y = g.parent;
 		p.left = g; g.parent = p;
 		g.right = t; t.parent = g;
@@ -61,7 +63,7 @@ public class Set<T extends Comparable<T>> {
 
     public void insert(T key) {
 		if (this.root == null) {
-			this.root = new SetNode<T>(key, null, false);
+			this.root = new SetNode<T>(key, null);
 			this.root.color = Color.BLACK;
 			return;
 		}
@@ -76,8 +78,9 @@ public class Set<T extends Comparable<T>> {
 			}
 		}
 
-		z = new SetNode<T>(key, z.parent, z.isLeft);
-		if (z.isLeft) z.parent.left = z;
+		boolean zl = z.isLeft();
+		z = new SetNode<T>(key, z.parent);
+		if (zl) z.parent.left = z;
 		else z.parent.right = z;
 
 		z.color = Color.RED;
@@ -87,7 +90,7 @@ public class Set<T extends Comparable<T>> {
 			p = z.parent;
 			g = z.parent;
 			if (p.color == Color.BLACK) return;
-			if (p.isLeft) u = g.right;
+			if (p.isLeft()) u = g.right;
 			else u = g.left;
 			if (u.color == Color.BLACK) break;
 			p.color = Color.BLACK;
@@ -101,16 +104,16 @@ public class Set<T extends Comparable<T>> {
 			return;
 		}
 
-		if (z.isLeft && p.isLeft) {
+		if (z.isLeft() && p.isLeft()) {
 			rightRotate(g);
 			p.color = Color.BLACK;
 			g.color = Color.RED;
-		} else if (!z.isLeft && p.isLeft) {
+		} else if (!z.isLeft() && p.isLeft()) {
 			leftRotate(p);
 			rightRotate(g);
 			z.color = Color.BLACK;
 			g.color = Color.RED;
-		} else if (!z.isLeft && !p.isLeft) {
+		} else if (!z.isLeft() && !p.isLeft()) {
 			leftRotate(g);
 			p.color = Color.BLACK;
 			g.color = Color.RED;

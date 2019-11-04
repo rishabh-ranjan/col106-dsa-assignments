@@ -20,6 +20,14 @@ class Point implements PointInterface, Comparable<Point> {
 		faceNeighbors = new ArrayList<Triangle>();
 	}
 
+	public String toString() {
+		// for (int i = 0; i < vertexNeighbors.size(); ++i) {
+		// 	System.out.println(vertexNeighbors.get(i).x + " "
+		// 		+ vertexNeighbors.get(i).y + " " + vertexNeighbors.get(i).z);
+		// }
+		return "Point( " + x + ", " + y + ", " + z + ", " + vertexNeighbors.size() + ", " + edgeNeighbors.size() + ", " + faceNeighbors.size() + " )";
+	}
+
 	public float getX() {
 		return x;
 	}
@@ -45,12 +53,8 @@ class Point implements PointInterface, Comparable<Point> {
 
 	public int compareTo(Point p) {
 		if (this == p) return 0;
-		if (x == p.x && y == p.y) {
-			return comp(z, p.z);
-		} else if (x == p.x) {
-			return comp(y, p.y);
-		} else {
-			return comp(x, p.x);
-		}
+		if (x == p.x && y == p.y) return comp(z, p.z);
+		if (x == p.x) return comp(y, p.y);
+		return comp(x, p.x);
 	}
 }

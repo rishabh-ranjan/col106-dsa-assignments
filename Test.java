@@ -4,36 +4,17 @@ public class Test {
 		System.out.println(obj);
 	}
 	public static void main(String[] args) {
-		Set<String> s = new Set<String>();
-		String[] arr = {
-			"abc",
-			"abc",
-			"xyz",
-			"xyz",
-			"xyz",
-			"abc",
-			"hello",
-			"xyz",
-			"hello",
-			"abc",
-			"hello",
-			"123",
-			"1234",
-			"12345",
-			"123",
-			"abc",
-			"rishabh",
-			"ranjan",
-			"ranjan"
-		};
-
+		Map<Integer, Integer> s = new Map<Integer, Integer>();
+		int arr[] = {1,3,0,1,5,2,2,4,1};
 		for (int i = 0; i < arr.length; ++i) {
-			s.insert(arr[i]);
-		}
-
-		ArrayList<String> r = s.getElements();
-		for (int i = 0; i < r.size(); ++i) {
-			println(r.get(i));
+			s.insert(arr[i], arr[i]);
+			println("insert " + arr[i]);
+			ArrayList<Integer> a = s.getValues();
+			for (int j = 0; j < a.size(); ++j) {
+				System.out.print(a.get(j) + " ");
+			}
+			println("");
+			println("---");
 		}
 	}
 }
