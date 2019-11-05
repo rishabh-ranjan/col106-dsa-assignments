@@ -32,6 +32,15 @@ public class Triangle implements TriangleInterface, Comparable<Triangle> {
 		faceNeighbors = new ArrayList<Triangle>();
 	}
 
+	public boolean isProperNeighbor(Triangle t) {
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				if (edges.get(i) == t.edges.get(j)) return true;
+			}
+		}
+		return false;
+	}
+
 	public String toString() {
 		return "Triangle[ " + vertices.first + ", " + vertices.second + ", " + vertices.third + " ]";
 	}

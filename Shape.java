@@ -133,7 +133,9 @@ public class Shape implements ShapeInterface {
 								at.component = cmp;
 								cmp.add(at);
 							}
-							componentList.delete(alt.index);
+							componentList.set(alt.index, componentList.get(componentList.size() - 1));
+							componentList.get(alt.index).index = alt.index;
+							componentList.pop();
 						}
 					}
 				}
@@ -153,7 +155,9 @@ public class Shape implements ShapeInterface {
 								at.component = cmp;
 								cmp.add(at);
 							}
-							componentList.delete(alt.index);
+							componentList.set(alt.index, componentList.get(componentList.size() - 1));
+							componentList.get(alt.index).index = alt.index;
+							componentList.pop();
 						}
 					}
 				}
@@ -207,8 +211,32 @@ public class Shape implements ShapeInterface {
 	public TriangleInterface[] EXTENDED_NEIGHBOR_TRIANGLE(float[] c) {
 		Triangle t = findFace(c);
 		if (t == null) return null;
-		// TODO: piazza answer?
-		return null;
+		ArrayList<Triangle> a = new ArrayList<Triangle>();
+		for (int i = 0; i < 3; ++i) {
+			Point p = t.vertices.get(i);
+			for (int j = 0; j < p.faceNeighbors.size(); ++j) {
+				Triangle f = p.faceNeighbors.get(j);
+				if (!t.isProperNeighbor(f)) {
+					a.add(f);
+				}
+			}
+		}
+		for (int i = 0; i < 3; ++i) {
+			Edge e = t.edges.get(i);
+			for (int j = 0; j < e.faceNeighbors.size(); ++j) {
+				Triangle f = e.faceNeighbors.get(j);
+				if (t != f) {
+					a.add(f);
+				}
+			}
+		}
+		if (a.size() == 0) return null;
+		Sort.sort(a);
+		TriangleInterface[] r = new TriangleInterface[a.size()];
+		for (int i = 0; i < r.length; ++i) {
+			r[i] = a.get(i);
+		}
+		return r;
 	}
 
 	private Point findVertex(float[] c) {
@@ -218,7 +246,7 @@ public class Shape implements ShapeInterface {
 
 	public TriangleInterface[] INCIDENT_TRIANGLES(float[] c) {
 		Point p = findVertex(c);
-		if (c == null) return null;
+		if (p == null) return null;
 		// Sort.sort(p.faceNeighbors);
 		TriangleInterface[] r = new TriangleInterface[p.faceNeighbors.size()];
 		for (int i = 0; i < r.length; ++i) {
@@ -229,7 +257,7 @@ public class Shape implements ShapeInterface {
 
 	public PointInterface[] NEIGHBORS_OF_POINT(float[] c) {
 		Point p = findVertex(c);
-		if (c == null) return null;
+		if (p == null) return null;
 		PointInterface[] r = new PointInterface[p.vertexNeighbors.size()];
 		for (int i = 0; i < r.length; ++i) {
 			r[i] = p.vertexNeighbors.get(i);
@@ -239,7 +267,7 @@ public class Shape implements ShapeInterface {
 
 	public EdgeInterface[] EDGE_NEIGHBORS_OF_POINT(float[] c) {
 		Point p = findVertex(c);
-		if (c == null) return null;
+		if (p == null) return null;
 		EdgeInterface[] r = new EdgeInterface[p.edgeNeighbors.size()];
 		for (int i = 0; i < r.length; ++i) {
 			r[i] = p.edgeNeighbors.get(i);
@@ -249,7 +277,7 @@ public class Shape implements ShapeInterface {
 
 	public TriangleInterface[] FACE_NEIGHBORS_OF_POINT(float[] c) {
 		Point p = findVertex(c);
-		if (c == null) return null;
+		if (p == null) return null;
 		// Sort.sort(p.faceNeighbors);
 		TriangleInterface[] r = new TriangleInterface[p.faceNeighbors.size()];
 		for (int i = 0; i < r.length; ++i) {
@@ -307,5 +335,22 @@ public class Shape implements ShapeInterface {
 		Triangle t2 = findFace(c2);
 		if (t2 == null) return false;
 		return t1.component == t2.component;
+	}
+
+	public EdgeInterface[] BOUNDARY_EDGES() {
+		ArrayList<Edge> a = new ArrayList<Edge>();
+		for (int i = 0; i < edgeList.size(); ++i) {
+			Edge e = edgeList.get(i);
+			if (e.faceNeighbors.size() == 1) {
+				a.add(e);
+			}
+		}
+		if (a.size() == 0) return null;
+		Sort.sort(a);
+		EdgeInterface[] r = new EdgeInterface[a.size()];
+		for (int i = 0; i < r.length; ++i) {
+			r[i] = a.get(i);
+		}
+		return r;
 	}
 }

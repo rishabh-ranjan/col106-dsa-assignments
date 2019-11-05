@@ -20,11 +20,12 @@ public class ArrayList<T> {
 		size += 1;
 	}
 
-	public void delete(int i) {
-		Object tmp = arr[size-1];
-		arr[size-1] = arr[i];
-		arr[i] = tmp;
+	public void pop() {
 		size--;
+	}
+
+	public void set(int i, T e) {
+		arr[i] = e;
 	}
 
 	public T get(int i) {
