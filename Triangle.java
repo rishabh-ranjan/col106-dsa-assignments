@@ -42,10 +42,6 @@ public class Triangle implements TriangleInterface, Comparable<Triangle> {
 		return false;
 	}
 
-	public String toString() {
-		return "Triangle[ " + vertices.first + ", " + vertices.second + ", " + vertices.third + " ]";
-	}
-
 	public PointInterface[] triangle_coord() {
 		PointInterface[] r = new PointInterface[3];
 		for (int i = 0; i < 3; ++i) r[i] = vertices.get(i);

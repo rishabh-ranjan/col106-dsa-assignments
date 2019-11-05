@@ -20,14 +20,6 @@ class Point implements PointInterface, Comparable<Point> {
 		faceNeighbors = new ArrayList<Triangle>();
 	}
 
-	public String toString() {
-		// for (int i = 0; i < vertexNeighbors.size(); ++i) {
-		// 	System.out.println(vertexNeighbors.get(i).x + " "
-		// 		+ vertexNeighbors.get(i).y + " " + vertexNeighbors.get(i).z);
-		// }
-		return "Point( " + x + ", " + y + ", " + z + ", " + vertexNeighbors.size() + ", " + edgeNeighbors.size() + ", " + faceNeighbors.size() + " )";
-	}
-
 	public float getX() {
 		return x;
 	}
