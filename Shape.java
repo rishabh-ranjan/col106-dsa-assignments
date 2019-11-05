@@ -396,4 +396,46 @@ public class Shape implements ShapeInterface {
 		}
 		return mx;
 	}
+
+	public PointInterface[] CENTROID() {
+		ArrayList<Point> a = new ArrayList<Point>();
+		for (int i = 0; i < componentList.size(); ++i) {
+			Component cmp = componentList.get(i);
+			double ax = 0, ay = 0, az = 0;
+			double ctr = 0;
+			for (int j = 0; j < cmp.size(); ++j) {
+				cmp.get(j).discovered = false;
+			}
+			Triangle s = cmp.get(0);
+			ArrayList<Triangle> q = new ArrayList<Triangle>();
+			q.add(s);
+			s.discovered = true;
+			int f = 0;
+			while (f < q.size()) {
+				Triangle t = q.get(f++);
+				for (int j = 0; j < 3; ++j) {
+					Point p = t.vertices.get(j);
+					int d = p.faceNeighbors.size();
+					ax += p.x/d;
+					ay += p.y/d;
+					az += p.z/d;
+					ctr += 1.0/d;
+				}
+				for (int j = 0; j < t.faceNeighbors.size(); ++j) {
+					Triangle ft = t.faceNeighbors.get(j);
+					if (!ft.discovered) {
+						q.add(ft);
+						ft.discovered = true;
+					}
+				}
+			}
+			a.add(new Point((float)(ax/ctr), (float)(ay/ctr), (float)(az/ctr)));
+		}
+		Sort.sort(a);
+		PointInterface[] r = new PointInterface[a.size()];
+		for (int i = 0; i < r.length; ++i) {
+			r[i] = a.get(i);
+		}
+		return r;
+	}
 }
