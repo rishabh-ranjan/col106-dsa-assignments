@@ -17,6 +17,7 @@ public class Triangle implements TriangleInterface, Comparable<Triangle> {
 	public int insert_time;
 
 	public Component component;
+	public boolean discovered;
 
 	public UnorderedTriple<Point> vertices;
 	public ArrayList<Edge> edges;

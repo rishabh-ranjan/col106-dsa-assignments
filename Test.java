@@ -19,11 +19,13 @@ public class Test {
 
 		for (int i = 0; i < arr.length; ++i) {
 			shape.ADD_TRIANGLE(arr[i]);
-			print(shape.componentList.size() + " : ");
-			for (int j = 0; j < shape.componentList.size(); ++j) {
-				print(shape.componentList.get(j).size() + " ");
-			}
-			println("");
+			// print(shape.componentList.size() + " : ");
+			// for (int j = 0; j < shape.componentList.size(); ++j) {
+			// 	print(shape.componentList.get(j).size() + " ");
+			// }
+			// println("");
 		}
+
+		println(shape.MAXIMUM_DIAMETER());
 	}
 }

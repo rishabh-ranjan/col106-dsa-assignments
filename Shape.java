@@ -353,4 +353,47 @@ public class Shape implements ShapeInterface {
 		}
 		return r;
 	}
+
+	public int MAXIMUM_DIAMETER() {
+		Component cmp = null;
+		int mx = -1;
+		for (int i = 0; i < componentList.size(); ++i) {
+			Component c = componentList.get(i);
+			if (c.size() > mx) {
+				mx = c.size();
+				cmp = c;
+			}
+		}
+		mx = 0;
+		for (int i = 0; i < cmp.size(); ++i) {
+			for (int j = 0; j < cmp.size(); ++j) {
+				cmp.get(j).discovered = false;
+			}
+			Triangle s = cmp.get(i);
+			ArrayList<Triangle> q = new ArrayList<Triangle>();
+			q.add(s);
+			s.discovered = true;
+			q.add(null);
+			int f = 0;
+			int d = 0;
+			while (f < q.size()) {
+				Triangle t = q.get(f++);
+				if (t == null) {
+					q.add(null);
+					if (q.get(f) == null) break;
+					d++;
+					if (d > mx) mx = d;
+					continue;
+				}
+				for (int j = 0; j < t.faceNeighbors.size(); ++j) {
+					Triangle ft = t.faceNeighbors.get(j);
+					if (!ft.discovered) {
+						q.add(ft);
+						ft.discovered = true;
+					}
+				}
+			}
+		}
+		return mx;
+	}
 }
