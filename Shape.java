@@ -400,42 +400,49 @@ public class Shape implements ShapeInterface {
 	public PointInterface[] CENTROID() {
 		ArrayList<Point> a = new ArrayList<Point>();
 		for (int i = 0; i < componentList.size(); ++i) {
-			Component cmp = componentList.get(i);
-			double ax = 0, ay = 0, az = 0;
-			double ctr = 0;
-			for (int j = 0; j < cmp.size(); ++j) {
-				cmp.get(j).discovered = false;
-			}
-			Triangle s = cmp.get(0);
-			ArrayList<Triangle> q = new ArrayList<Triangle>();
-			q.add(s);
-			s.discovered = true;
-			int f = 0;
-			while (f < q.size()) {
-				Triangle t = q.get(f++);
-				for (int j = 0; j < 3; ++j) {
-					Point p = t.vertices.get(j);
-					int d = p.faceNeighbors.size();
-					ax += p.x/d;
-					ay += p.y/d;
-					az += p.z/d;
-					ctr += 1.0/d;
-				}
-				for (int j = 0; j < t.faceNeighbors.size(); ++j) {
-					Triangle ft = t.faceNeighbors.get(j);
-					if (!ft.discovered) {
-						q.add(ft);
-						ft.discovered = true;
-					}
-				}
-			}
-			a.add(new Point((float)(ax/ctr), (float)(ay/ctr), (float)(az/ctr)));
+			a.add(componentList.get(i).centroid());
 		}
 		Sort.sort(a);
 		PointInterface[] r = new PointInterface[a.size()];
 		for (int i = 0; i < r.length; ++i) {
 			r[i] = a.get(i);
 		}
+		return r;
+	}
+
+	public PointInterface CENTROID_OF_COMPONENT(float[] c) {
+		Point p = findVertex(c);
+		if (p == null) return null;
+		return p.faceNeighbors.get(0).component.centroid();
+	}
+
+	public PointInterface[] CLOSEST_COMPONENTS() {
+		for (int i = 0; i < componentList.size(); ++i) {
+			componentList.get(i).fillVertexList();
+		}
+		double mn = Double.MAX_VALUE;
+		Point pa = null, pb = null;
+		for (int i = 0; i < componentList.size(); ++i) {
+			Component a = componentList.get(i);
+			ArrayList<Point> va = a.vertexList;
+			for (int j = i+1; j < componentList.size(); ++j) {
+				Component b = componentList.get(j);
+				ArrayList<Point> vb = b.vertexList;
+				for (int k = 0; k < va.size(); ++k) {
+					for (int l = 0; l < vb.size(); ++l) {
+						double d = Point.distance(va.get(k), vb.get(l));
+						if (d < mn) {
+							mn = d;
+							pa = va.get(k);
+							pb = vb.get(l);
+						}
+					}
+				}
+			}
+		}
+		PointInterface[] r = new PointInterface[2];
+		r[0] = pa;
+		r[1] = pb;
 		return r;
 	}
 }
