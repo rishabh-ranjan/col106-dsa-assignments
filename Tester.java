@@ -4,10 +4,19 @@ import java.io.*;
 
 public class Tester {
 	private static void print(Object obj) {
-		System.out.print(obj);
+		if (obj instanceof PointInterface) {
+			print((PointInterface)obj);
+		} else if (obj instanceof EdgeInterface) {
+			print((EdgeInterface)obj);
+		} else if (obj instanceof TriangleInterface) {
+			print((TriangleInterface)obj);
+		} else {
+			System.out.print(obj);
+		}
 	}
 	private static void println(Object obj) {
-		System.out.println(obj);
+		print(obj);
+		println();
 	}
 	private static void print(Object[] obj) {
 		if (obj == null) {
@@ -17,15 +26,7 @@ public class Tester {
 
 		print("[");
 		for (int i = 0; i < obj.length; ++i) {
-			if (obj[i] instanceof PointInterface) {
-				print((PointInterface)obj[i]);
-			} else if (obj[i] instanceof EdgeInterface) {
-				print((EdgeInterface)obj[i]);
-			} else if (obj[i] instanceof TriangleInterface) {
-				print((TriangleInterface)obj[i]);
-			} else {
-				print(obj[i]);
-			}
+			print(obj[i]);
 			if (i < obj.length - 1) print(", ");
 		}
 		print("]");

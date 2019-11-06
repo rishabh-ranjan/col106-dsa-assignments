@@ -322,7 +322,7 @@ public class Shape implements ShapeInterface {
 			if (s == 1) semi = true;
 		}
 		if (semi) return 2;
-		return 1;	
+		return 1;
 	}
 
 	public int COUNT_CONNECTED_COMPONENTS() {
@@ -413,10 +413,12 @@ public class Shape implements ShapeInterface {
 	public PointInterface CENTROID_OF_COMPONENT(float[] c) {
 		Point p = findVertex(c);
 		if (p == null) return null;
-		return p.faceNeighbors.get(0).component.centroid();
+		PointInterface r = p.faceNeighbors.get(0).component.centroid();
+		return r;
 	}
 
 	public PointInterface[] CLOSEST_COMPONENTS() {
+		if (componentList.size() == 1) return null;
 		for (int i = 0; i < componentList.size(); ++i) {
 			componentList.get(i).fillVertexList();
 		}
